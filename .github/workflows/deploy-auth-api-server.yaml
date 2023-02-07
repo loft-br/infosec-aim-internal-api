@@ -1,0 +1,46 @@
+name: "Deploy auth-api (server)"
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build docker image
+        run: docker build --file docker/Dockerfile --tag auth-api:latest .
+
+      - name: Checkout GitHub Action Repo
+        uses: actions/checkout@v2
+        with:
+          repository: loft-br/actions
+          ref: main
+          token: ${{ secrets.GIT_HUB_TOKEN }}
+          path: .github/actions/loft
+
+      # Create Secrets action: https://github.com/loft-br/actions/tree/main/secret_kubernetes
+      - name: Create Secret in K8S
+        uses: ./.github/actions/loft/secret_kubernetes
+        with:
+          environment: production
+          namespace: infosec-automations
+          k8s_secret_sa: ${{ secrets.K8S_SECRET_SA_PROD }}
+          artifact_name: auth-api
+          map: |
+            MY_SECRET_1=secret-value
+
+      # https://github.com/loft-br/actions/tree/main/deploy_kubernetes
+      - name: Deploy auth-api (server)
+        uses: ./.github/actions/loft/deploy_kubernetes       
+        with:         
+          environment: production
+          name: infosec-iam-internal-api
+          namespace: infosec-automations
+          artifact_name: auth-api
+          image: auth-api:latest
+          github_token: ${{ secrets.GIT_HUB_TOKEN }}
+          type: server
