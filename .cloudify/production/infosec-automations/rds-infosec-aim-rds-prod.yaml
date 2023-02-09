@@ -1,0 +1,59 @@
+## Please check the documentation before asking for help. If you do need help, ask #support_squad_devtools.
+## rds: https://backstage.loft.technology/docs/default/component/cloudify/prateleira/rds/
+## Auto Completions in your IDE: https://backstage.loft.technology/docs/default/component/cloudify/intellisense/
+
+recipe: rds
+config:
+  identifier: infosec-aim-rds-prod
+  storage:
+    type: gp2
+  #  initial: 20
+  #  maximum: 1000
+  # instanceClass: db.t4g.micro
+  # snapshotIdentifier: undefined
+  # you can set network connectivity as k8s or loft or if you want you can specify a security group id instead
+  network:
+    connectivity: k8s 
+    # securityGroupId: ""
+  databases:
+    - name: "infosec"
+      # protect: true
+      schemas:
+        - name: "aim"
+        # protect: true
+         
+    
+  
+  # monitors:
+    # connections:
+    #   monitorThresholds:
+    #     critical: 200
+    #     criticalRecovery: 199
+    # cpu:
+    #   monitorThresholds:
+    #     critical: 70
+    #     criticalRecovery: 69
+    # disk:
+    #   monitorThresholds:
+    #     critical: 20
+    #     criticalRecovery: 20.1
+    # iopsRead:
+    #   monitorThresholds:
+    #     critical: 1000
+    #     criticalRecovery: 999
+    # iopsWrite:
+    #   monitorThresholds:
+    #     critical: 1000
+    #     criticalRecovery: 999
+    # memory:
+    #   monitorThresholds:
+    #     critical: 20
+    #     criticalRecovery: 20.1
+    # replicaLag:
+    #   monitorThresholds:
+    #     critical: 3601
+    #     criticalRecovery: 3600
+    # replicaStatus:
+    #   monitorThresholds:
+    #     critical: -1
+    #     criticalRecovery: 0
